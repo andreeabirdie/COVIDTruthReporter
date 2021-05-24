@@ -1,0 +1,25 @@
+{
+    "name": "COVID Truth Reporter",
+    "description": "Helps you distinguish what's real and what's not about COVID-19",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions": ["tabs", "contextMenus", "storage"],
+    "background": {
+        "service_worker": "background.js"
+    },  
+    "content_scripts": [
+        {
+        "matches": ["<all_urls>"],
+        "js": ["content.js", "bootstrap.min.js", "jquery.min.js"]
+        }
+    ],
+    "host_permissions":["http://localhost/*"],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "icons": {
+        "16": "/pics/icon16.png",
+        "48": "/pics/icon48.png",
+        "128": "/pics/icon128.png" 
+    }
+}

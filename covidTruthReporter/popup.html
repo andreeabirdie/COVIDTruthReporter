@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <img id='logo' src='pics/logo.png'>
+  <p id='instructions'>Select some text and click the corresponding action in the right-click menu to analyse it or
+    click the button below to automatically detect text in the current tab and label it</p>
+
+  <div class='progress'>
+    <label for='headline_progress'>Headline truth report:</label>
+    <div class='progress_bar'>
+      <span style='width: 25%'>
+        <p>25%</p>
+      </span>
+    </div>
+  </div>
+  <div class='progress'>
+    <label for='article_progress'>Article truth report:</label>
+    <div class='progress_bar'>
+      <span style='width: 25%'>
+        <p>25%</p>
+      </span>
+    </div>
+  </div>
+
+  <button type='button' id='run_analysis_btn'>Analyse now</button>
+  <button type='button' id='remove_highlights_btn'>Remove highlights</button>
+</body>
+<script src='popup.js'></script>
+
+</html>
