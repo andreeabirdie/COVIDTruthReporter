@@ -6,30 +6,65 @@
 </head>
 
 <body>
-  <img id='logo' src='pics/logo.png'>
-  <p id='instructions'>Select some text and click the corresponding action in the right-click menu to analyse it or
+  <img id="logo" src="pics/logo.png">
+  <div id="switchContainer">
+    <label for="switch">Show model options</label>
+    <label id="switch" class="switch">
+      <input id="switchCheckBox" type="checkbox">
+      <span class="slider round"></span>
+    </label>
+  </div>
+  <div id="networkOptions" class="optionsContainer">
+    <div class="options">
+      <label for="headlineOptions">Headline:</label>
+      <select name="networkHeadline" id="networkHeadline">
+        <option value="dnn">DNN</option>
+        <option value="rnn">RNN</option>
+        <option value="cnn" selected>CNN</option>
+      </select>
+      <select name="embeddingHeadline" id="embeddingHeadline" value="word2vec">
+        <option value="tfidf" id='tfidfHeadline' disabled>TFIDF</option>
+        <option value="word2vec" selected>word2vec</option>
+        <option value="doc2vec">doc2vec</option>
+      </select>
+    </div>
+    <div class="options">
+      <label for="articleOptions">   Article:</label>
+      <select name="networkArticle" id="networkArticle" value="DNN">
+        <option value="dnn" selected>DNN</option>
+        <option value="rnn">RNN</option>
+        <option value="cnn">CNN</option>
+      </select>
+      <select name="embeddingArticle" id="embeddingArticle" value="tfidf" disabled>
+        <option value="tfidf" id='tfidfArticle' selected>TFIDF</option>
+        <option value="word2vec">word2vec</option>
+        <option value="doc2vec">doc2vec</option>
+      </select>
+    </div>
+  </div>
+
+  <p id="instructions">Select some text and click the corresponding action in the right-click menu to analyse it or
     click the button below to automatically detect text in the current tab and label it</p>
 
-  <div class='progress'>
-    <label for='headline_progress'>Headline truth report:</label>
-    <div class='progress_bar'>
-      <span style='width: 25%'>
+  <div class="progress">
+    <label for="headline_progress">Headline truth report:</label>
+    <div class="progress_bar">
+      <span style="width: 25%">
         <p>25%</p>
       </span>
     </div>
   </div>
-  <div class='progress'>
-    <label for='article_progress'>Article truth report:</label>
-    <div class='progress_bar'>
-      <span style='width: 25%'>
+  <div class="progress">
+    <label for="article_progress">Article truth report:</label>
+    <div class="progress_bar">
+      <span style="width: 25%">
         <p>25%</p>
       </span>
     </div>
   </div>
 
-  <button type='button' id='run_analysis_btn'>Analyse now</button>
-  <button type='button' id='remove_highlights_btn'>Remove highlights</button>
+  <button type="button" id="run_analysis_btn" class="button">Analyse now</button>
+  <button type="button" id="remove_highlights_btn" class="button">Remove highlights</button>
 </body>
-<script src='popup.js'></script>
-
+<script src="popup.js"></script>
 </html>

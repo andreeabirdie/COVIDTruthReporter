@@ -13,29 +13,31 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 var popupId;
 var currentTabId; 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.type === 'run analysis') {
-    popupId = sender.id;
-    chrome.storage.sync.set({ 'CTRrequestStatus': 'running' });
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      currentTabId = tabs[0].id;
-      chrome.tabs.sendMessage(tabs[0].id, request)
-    });
-  }
-  if(request.type === 'remove highlights') {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      currentTabId = tabs[0].id;
-      chrome.tabs.sendMessage(tabs[0].id, request)
-    });
-  }
-  if (request.type === 'finished analysis') {
-    chrome.storage.sync.set({ 'CTRrequestStatus': 'finished' });
-  }
-  if (request.type === 'fetch label analysis') {
-    fetchLabel(request.headline, currentTabId, 'headline label');
-    fetchLabel(request.content, currentTabId, 'content label');
-  }
-  if (request.type === 'scraping unavailable') {
-    chrome.storage.sync.set({ 'CTRrequestStatus': 'scraping unavailable' });
+  switch(request.type){
+    case 'run analysis':
+      popupId = sender.id;
+      chrome.storage.sync.set({ 'CTRrequestStatus': 'running' });
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        currentTabId = tabs[0].id;
+        chrome.tabs.sendMessage(tabs[0].id, request)
+      });
+      break;
+    case 'remove highlights':
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        currentTabId = tabs[0].id;
+        chrome.tabs.sendMessage(tabs[0].id, request)
+      });
+      break;
+    case 'finished analysis':
+      chrome.storage.sync.set({ 'CTRrequestStatus': 'finished' });
+      break;
+    case 'fetch label analysis':
+      fetchLabel(request.headline, currentTabId, 'headline label');
+      fetchLabel(request.content, currentTabId, 'content label');
+      break;
+    case 'scraping unavailable':
+      chrome.storage.sync.set({ 'CTRrequestStatus': 'scraping unavailable' });
+      break;
   }
 })
 
