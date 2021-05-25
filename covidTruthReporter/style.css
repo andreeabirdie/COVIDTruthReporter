@@ -52,6 +52,7 @@ body {
     margin: auto;
     text-align: center;
     font-weight: bold;
+    margin-top: 5px;
 }
 
 .progress_bar {

@@ -18,25 +18,25 @@
     <div class="options">
       <label for="headlineOptions">Headline:</label>
       <select name="networkHeadline" id="networkHeadline">
-        <option value="dnn">DNN</option>
-        <option value="rnn">RNN</option>
-        <option value="cnn" selected>CNN</option>
+        <option value="DNN">DNN</option>
+        <option value="RNN">RNN</option>
+        <option value="CNN">CNN</option>
       </select>
-      <select name="embeddingHeadline" id="embeddingHeadline" value="word2vec">
-        <option value="tfidf" id='tfidfHeadline' disabled>TFIDF</option>
-        <option value="word2vec" selected>word2vec</option>
+      <select name="embeddingHeadline" id="embeddingHeadline">
+        <option value="tfidf" id='tfidfHeadline'>TFIDF</option>
+        <option value="word2vec">word2vec</option>
         <option value="doc2vec">doc2vec</option>
       </select>
     </div>
     <div class="options">
-      <label for="articleOptions">   Article:</label>
-      <select name="networkArticle" id="networkArticle" value="DNN">
-        <option value="dnn" selected>DNN</option>
-        <option value="rnn">RNN</option>
-        <option value="cnn">CNN</option>
+      <label for="articleOptions">Article:</label>
+      <select name="networkArticle" id="networkArticle">
+        <option value="DNN">DNN</option>
+        <option value="RNN">RNN</option>
+        <option value="CNN">CNN</option>
       </select>
-      <select name="embeddingArticle" id="embeddingArticle" value="tfidf" disabled>
-        <option value="tfidf" id='tfidfArticle' selected>TFIDF</option>
+      <select name="embeddingArticle" id="embeddingArticle">
+        <option value="tfidf" id='tfidfArticle'>TFIDF</option>
         <option value="word2vec">word2vec</option>
         <option value="doc2vec">doc2vec</option>
       </select>
