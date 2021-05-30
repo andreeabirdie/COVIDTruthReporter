@@ -2,65 +2,72 @@ import json
 from http.server import BaseHTTPRequestHandler
 
 from NetworkModel import NetworkModel
+from NetworkSettings import NetworkSettings
 from tokenizers.EmbeddingsTokenizer import EmbeddingsTokenizer
 from tokenizers.TFIDFVectorizer import TFIDFVectorizer
 
 
 class Server(BaseHTTPRequestHandler):
-    def __init__(self):
-        self._headlinesDataset = "./data/headlines.csv"
-        self._articlesDataset = "./data/articles.csv"
-        self._headlinesNetworkType = "CNN"
-        self._headlinesEmbeddingType = "word2vec"
-        self._articlesNetworkType = "DNN"
-        self._articlesEmbeddingType = "tfidf"
-        self._headlinesModel = NetworkModel("./savedModels/CNN_headlines_w2v_300",
-                                            EmbeddingsTokenizer(self._headlinesDataset))
-        self._articlesModel = NetworkModel("./savedModels/tfidf_articles", TFIDFVectorizer(self._articlesDataset))
+    def __init__(self, headlinesPath="./data/headlines.csv", articlesPath="./data/articles.csv", headlinesNetwork="CNN",
+                 headlinesEmbedding="word2vec", articlesNetwork="DNN", articlesEmbedding="tfidf"):
+        self._pathToHeadlinesDataset = headlinesPath
+        self._pathToArticlesDataset = articlesPath
+        self._networkSettings = NetworkSettings(headlinesNetwork, headlinesEmbedding, articlesNetwork, articlesEmbedding)
+        self._setHeadlinesModel(headlinesNetwork, headlinesEmbedding, checkOldValues=False)
+        self._setArticlesModel(articlesNetwork, articlesEmbedding, checkOldValues=False)
 
     def __call__(self, *args, **kwargs):
-        """ Handle a request """
         super().__init__(*args, **kwargs)
 
-    def __setHeadlinesModel(self, networkType, embeddingType):
-        if networkType == "DNN":
-            modelPath = "./savedModels/tfidf_headlines"
-            tokenizer = TFIDFVectorizer(self._headlinesDataset)
-        else:
-            tokenizer = EmbeddingsTokenizer(self._headlinesDataset)
-            if networkType == "CNN":
-                if embeddingType == 'word2vec':
-                    modelPath = "./savedModels/CNN_headlines_w2v_300"
-                else:
-                    modelPath = "./savedModels/CNN_headlines_d2v_100"
-            else:
-                if embeddingType == 'word2vec':
-                    modelPath = "./savedModels/RNN_headlines_w2v_300"
-                else:
-                    modelPath = "./savedModels/RNN_headlines_d2v_100"
-        self._headlinesModel = NetworkModel(modelPath, tokenizer)
-        self._headlinesNetworkType = networkType
-        self._headlinesEmbeddingType = embeddingType
+    def _setHeadlinesModel(self, networkType, embeddingType, checkOldValues=True):
+        oldNetwork = None
+        oldEmbedding = None
+        if checkOldValues:
+            oldNetwork, oldEmbedding = self._networkSettings.getHeadlinesSettings()
 
-    def __setArticlesModel(self, networkType, embeddingType):
-        if networkType == "DNN":
-            modelPath = "./savedModels/tfidf_articles"
-            tokenizer = TFIDFVectorizer(self._articlesDataset)
-        else:
-            tokenizer = EmbeddingsTokenizer(self._articlesDataset)
-            if networkType == "CNN":
-                if embeddingType == 'word2vec':
-                    modelPath = "./savedModels/CNN_articles_w2v_300"
-                else:
-                    modelPath = "./savedModels/CNN_articles_d2v_100"
+        if networkType != oldNetwork or embeddingType != oldEmbedding:
+            if networkType == "DNN":
+                modelPath = "./savedModels/tfidf_headlines"
+                tokenizer = TFIDFVectorizer(self._pathToHeadlinesDataset)
             else:
-                if embeddingType == 'word2vec':
-                    modelPath = "./savedModels/RNN_articles_w2v_300"
+                tokenizer = EmbeddingsTokenizer(self._pathToHeadlinesDataset)
+                if networkType == "CNN":
+                    if embeddingType == 'word2vec':
+                        modelPath = "./savedModels/CNN_headlines_w2v_300"
+                    else:
+                        modelPath = "./savedModels/CNN_headlines_d2v_100"
                 else:
-                    modelPath = "./savedModels/RNN_articles_d2v_100"
-        self._articlesModel = NetworkModel(modelPath, tokenizer)
-        self._articlesNetworkType = networkType
-        self._articlesEmbeddingType = embeddingType
+                    if embeddingType == 'word2vec':
+                        modelPath = "./savedModels/RNN_headlines_w2v_300"
+                    else:
+                        modelPath = "./savedModels/RNN_headlines_d2v_100"
+            self._headlinesModel = NetworkModel(modelPath, tokenizer)
+            self._networkSettings.setHeadlinesSettings(networkType, embeddingType)
+
+    def _setArticlesModel(self, networkType, embeddingType, checkOldValues=True):
+        oldNetwork = None
+        oldEmbedding = None
+        if checkOldValues:
+            oldNetwork, oldEmbedding = self._networkSettings.getArticlesSettings()
+
+        if networkType != oldNetwork or embeddingType != oldEmbedding:
+            if networkType == "DNN":
+                modelPath = "./savedModels/tfidf_articles"
+                tokenizer = TFIDFVectorizer(self._pathToArticlesDataset)
+            else:
+                tokenizer = EmbeddingsTokenizer(self._pathToArticlesDataset)
+                if networkType == "CNN":
+                    if embeddingType == 'word2vec':
+                        modelPath = "./savedModels/CNN_articles_w2v_300"
+                    else:
+                        modelPath = "./savedModels/CNN_articles_d2v_100"
+                else:
+                    if embeddingType == 'word2vec':
+                        modelPath = "./savedModels/RNN_articles_w2v_300"
+                    else:
+                        modelPath = "./savedModels/RNN_articles_d2v_100"
+            self._articlesModel = NetworkModel(modelPath, tokenizer)
+            self._networkSettings.setArticlesSettings(networkType, embeddingType)
 
     def _set_headers(self):
         self.send_response(200)
@@ -68,8 +75,7 @@ class Server(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        message = {'headlinesNetwork': self._headlinesNetworkType, 'headlinesEmbedding': self._headlinesEmbeddingType,
-                   'articlesNetwork': self._articlesNetworkType, 'articlesEmbedding': self._articlesEmbeddingType}
+        message = self._networkSettings.toJson()
         self._set_headers()
         self.wfile.write(json.dumps(message).encode('utf-8'))
 

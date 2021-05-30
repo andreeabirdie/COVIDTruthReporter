@@ -1,6 +1,6 @@
 chrome.storage.sync.set({ 'CTRrequestStatus': 'waiting' });
 chrome.contextMenus.create({
-  title: "run '%s' through the COVID Truth Reporter",
+  title: "label with the COVID Truth Reporter",
   contexts: ['selection'],
   id: 'manualAnalysisOption'
 });

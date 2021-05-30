@@ -61,6 +61,7 @@ function updatePopup() {
             case 'fetch failed':
                 run_analysis_button.style.display = 'none';
                 switchContainer.style.display = 'none';
+                networkOptions.style.display = 'none';
                 instructionsTxt.innerText = 'Server is down at the moment. Please try again later';
                 break;
             case 'scraping unavailable':

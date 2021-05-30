@@ -10,6 +10,7 @@ body {
 }
 
 #instructions {
+    margin-top: 10px;
     text-align:center;
     font-size: 16px;
 }
@@ -34,6 +35,18 @@ body {
 #remove_highlights_btn {
     background-color: #d62d3b;
     display: none;
+}
+
+#send_config {
+    font-size: 12px;
+    display: block;
+    margin-top: 10px;
+    padding: 10px 26px;
+    float: right;
+}
+
+#sendBtnContainer {
+    overflow: hidden;
 }
 
 #switchContainer {

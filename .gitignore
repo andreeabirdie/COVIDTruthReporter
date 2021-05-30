@@ -1,0 +1,10 @@
+
+server/savedModels/CNN_articles_d2v_100/saved_model.pb
+server/savedModels/CNN_articles_d2v_100/variables/variables.data-00000-of-00001
+server/savedModels/CNN_articles_d2v_100/variables/variables.index
+server/savedModels/CNN_articles_w2v_100/saved_model.pb
+server/savedModels/CNN_articles_w2v_100/variables/variables.data-00000-of-00001
+server/savedModels/CNN_articles_w2v_100/variables/variables.index
+server/savedModels/CNN_headlines_d2v_100/saved_model.pb
+server/savedModels/CNN_headlines_d2v_100/variables/variables.data-00000-of-00001
+server/savedModels/CNN_headlines_d2v_100/variables/variables.index
