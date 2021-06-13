@@ -30,7 +30,7 @@ class Server(BaseHTTPRequestHandler):
                 modelPath = "./savedModels/tfidf_headlines"
                 tokenizer = TFIDFVectorizer(self._pathToHeadlinesDataset)
             else:
-                tokenizer = EmbeddingsTokenizer(self._pathToHeadlinesDataset)
+                tokenizer = EmbeddingsTokenizer(self._pathToHeadlinesDataset, maxlen=65)
                 if networkType == "CNN":
                     if embeddingType == 'word2vec':
                         modelPath = "./savedModels/CNN_headlines_w2v_300"
@@ -55,7 +55,7 @@ class Server(BaseHTTPRequestHandler):
                 modelPath = "./savedModels/tfidf_articles"
                 tokenizer = TFIDFVectorizer(self._pathToArticlesDataset)
             else:
-                tokenizer = EmbeddingsTokenizer(self._pathToArticlesDataset)
+                tokenizer = EmbeddingsTokenizer(self._pathToArticlesDataset, maxlen=4737)
                 if networkType == "CNN":
                     if embeddingType == 'word2vec':
                         modelPath = "./savedModels/CNN_articles_w2v_300"
@@ -84,12 +84,25 @@ class Server(BaseHTTPRequestHandler):
         post_body = self.rfile.read(content_len).decode("utf-8")
         print(post_body)
 
-        if len(post_body.split(" ")) < 50:
-            truthPercentage, label = self._headlinesModel.predict(post_body)
-        elif len(post_body.split(" ")) < 7000:
-            truthPercentage, label = self._articlesModel.predict(post_body)
-        print(post_body[:10] + "... - " + str(truthPercentage) + "/1 truthful => " + label)
+        split_body = post_body.split(" ")
+        if len(split_body) == 5 and split_body[0] == "networkSettings":
+            print(" - setting new settings - ")
+            self._setHeadlinesModel(split_body[1], split_body[2])
+            self._setArticlesModel(split_body[3], split_body[4])
+            message = self._networkSettings.toJson()
+            self._set_headers()
+            self.wfile.write(json.dumps(message).encode('utf-8'))
 
-        message = {'truthPercentage': truthPercentage.astype(float), 'label': label}
-        self._set_headers()
-        self.wfile.write(json.dumps(message).encode('utf-8'))
+        else:
+            del split_body
+            print(' - running analysis - ')
+
+            if len(post_body.split(" ")) < 65:
+                truthPercentage, label = self._headlinesModel.predict(post_body)
+            elif len(post_body.split(" ")) < 4737:
+                truthPercentage, label = self._articlesModel.predict(post_body)
+            print(post_body[:10] + "... - " + str(truthPercentage) + "/1 truthful => " + label)
+
+            message = {'truthPercentage': truthPercentage.astype(float), 'label': label}
+            self._set_headers()
+            self.wfile.write(json.dumps(message).encode('utf-8'))

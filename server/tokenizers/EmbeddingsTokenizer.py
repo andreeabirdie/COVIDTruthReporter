@@ -6,11 +6,11 @@ from tokenizers.TextPreprocessor import TextPreprocessor
 
 
 class EmbeddingsTokenizer(TextPreprocessor):
-    def __init__(self, pathToDataset):
-        self._tokenizer = Tokenizer(num_words=20000, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n\'', lower=True)
+    def __init__(self, pathToDataset, maxlen):
+        self._tokenizer = Tokenizer(num_words=50000, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n\'', lower=True)
         data = pd.read_csv(pathToDataset)
         self._tokenizer.fit_on_texts(data.iloc[:, 1])
-        self._maxlen = 65
+        self._maxlen = maxlen
 
     def preprocess(self, text):
         sequence = self._tokenizer.texts_to_sequences(text)

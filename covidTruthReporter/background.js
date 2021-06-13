@@ -40,6 +40,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     case 'get options':
       fetchOptions()
       break;
+    case 'set options':
+      console.log(request)
+      setNetworkSettings(request);
+      break;
   }
 })
 
@@ -50,12 +54,7 @@ function fetchOptions(){
   })
   .then(response => response.json())
   .then(json => {
-    console.log('am primit')
-    chrome.storage.sync.set({ 'headlinesNetwork': json.headlinesNetwork });
-    chrome.storage.sync.set({ 'headlinesEmbedding': json.headlinesEmbedding });
-    chrome.storage.sync.set({ 'articlesNetwork': json.articlesNetwork });
-    chrome.storage.sync.set({ 'articlesEmbedding': json.articlesEmbedding });
-    chrome.storage.sync.set({ 'CTRrequestStatus': 'options' });
+    sendSettingsToPopup(json.headlinesNetwork, json.headlinesEmbedding, json.articlesNetwork, json.articlesEmbedding);
   })
   .catch(function (error) {
     chrome.storage.sync.set({ 'CTRrequestStatus': 'fetch failed' });
@@ -85,4 +84,28 @@ function fetchLabel(text, tabId, msgtype) {
     .catch(function (error) {
       chrome.storage.sync.set({ 'CTRrequestStatus': 'fetch failed' });
     });
+}
+
+function setNetworkSettings(request){
+  var options = request.networkHeadline + " " + request.embeddingHeadline + " " + request.networkArticle + " " + request.embeddingArticle;
+  fetch(baseUrl, {
+    method: 'post',
+    headers: { "Content-type": "application/x-www-form-urlencoded; charset=UTF-8" },
+    body: "networkSettings " + options
+  })
+  .then(response => response.json())
+  .then(json => {
+    sendSettingsToPopup(json.headlinesNetwork, json.headlinesEmbedding, json.articlesNetwork, json.articlesEmbedding);
+  })
+  .catch(function (error) {
+    chrome.storage.sync.set({ 'CTRrequestStatus': 'fetch failed' });
+  });
+}
+
+function sendSettingsToPopup(headlinesNetwork, headlinesEmbedding, articlesNetwork, articlesEmbedding){
+  chrome.storage.sync.set({ 'headlinesNetwork': headlinesNetwork });
+    chrome.storage.sync.set({ 'headlinesEmbedding': headlinesEmbedding });
+    chrome.storage.sync.set({ 'articlesNetwork': articlesNetwork });
+    chrome.storage.sync.set({ 'articlesEmbedding': articlesEmbedding });
+    chrome.storage.sync.set({ 'CTRrequestStatus': 'options' });
 }
